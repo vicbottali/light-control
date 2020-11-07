@@ -1,0 +1,20 @@
+{
+  "name": "light-control",
+  "version": "1.0.0",
+  "description": "node controller for wifi lights",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "light-control"
+  },
+  "author": "vicbottali",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "express": "^4.17.1",
+    "magic-home": "^2.6.1"
+  }
+}
