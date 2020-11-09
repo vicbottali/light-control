@@ -123,22 +123,14 @@ function saveToFile(updateData){
   });
 }
 
-
-
-/*
-let light = new Control("192.168.1.47");
-light.setPower(true).then(success => {
-    console.log('on?')
-});
-*/
-
-/** For express for web interface later
+// For express for web interface later
 const express = require('express')
 const app = express()
 const port = 3000
 const path = require('path')
 
 app.use(express.static("public"));
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
@@ -147,4 +139,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
-*/
