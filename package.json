@@ -2,10 +2,10 @@
   "name": "light-control",
   "version": "1.0.0",
   "description": "node controller for wifi lights",
-  "main": "main.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "serve-dev": "webpack serve --env development"
+    "serve-dev": "webpack serve --env development",
+    "cli": "node ./server/cli.js"
   },
   "repository": {
     "type": "git",
@@ -15,10 +15,12 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "magic-home": "^2.6.1",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-hot-loader": "^4.13.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
