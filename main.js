@@ -9,29 +9,35 @@ const reader = require('readline').createInterface({
 });
 
 // intitial setup, check for saved device info
-var deviceInfo, deviceInfoString, discoveredDevices;
-fs.readFile('device-info.json', (error, data) => {
-    if(error) {
-      console.log('No saved device info. Generating device-info.json...');
-      deviceInfoString = JSON.stringify({devices:[], groups:[]});
-      fs.writeFile('device-info.json', deviceInfoString, (error) => {
-        if(error) {
-          throw error;
-        }
-        console.log(`File created. Run 'scan' command to view available devices.`);
-        deviceInfo = JSON.parse(deviceInfoString);
+// find devices on network
+var deviceInfo; 
+var discoveredDevices = {};
+scanLights()
+  .then(_ => {
+    fs.readFile('device-info.json', (error, data) => {
+      if(error) {
+        console.log('No saved device info. Generating device-info.json...');
+        deviceInfo = {};
+        fs.writeFile('device-info.json', JSON.stringify(deviceInfo), (error) => {
+          if(error) {
+            throw error;
+          }
+          console.log(`File created. Run 'scan' command to view available devices.`);
+          startCmdInterface();
+        });
+      } else {
+        deviceInfo = JSON.parse(data);
         startCmdInterface();
-      });
-    } 
-    else {
-      deviceInfoString = data;
-      deviceInfo = JSON.parse(deviceInfoString);
-      startCmdInterface();
-    }
-});
+      }
+    })
+  })
+  .catch((error) => {
+    throw error;
+  })
+
 
 function startCmdInterface(){
-  
+ 
   console.log("Enter Command: ");
   
   reader.on('line', (input) => {
@@ -56,43 +62,33 @@ function startCmdInterface(){
           `Command not found. List of options:
            scan - scans for all available devices 
            list - show all named devices
-           name <device-address> <name> - set a device's name`
+           name <device-id> <name> - set a device's name`
         );
     }
   });  
 }
 
-
+/**
+ * Scan for available devices on network
+ */
 async function scanLights() {
   let discovery = new Discovery();
   let devices = await discovery.scan(500);
-  discoveredDevices = devices;
+  devices.map((d) => {discoveredDevices[d.id] = d;});
 }
 
-async function nameLight(address, name) {
-  console.log(name, address);
-  /*
-  let nameFn = () => {
-
+function nameLight(id, name) {
+  if(!discoveredDevices[id]){
+    console.log("Invalid id.");
+    return;
   }
-  */
-  if(!discoveredDevices) {
-    await scanLights();
+  if(deviceInfo[id]){
+    console.log(`Device already named - ${deviceInfo[id].name}.`);
+  } else {
+    deviceInfo[id] = discoveredDevices[id];
+    deviceInfo[id].name = name;
+    saveToFile(deviceInfo);
   }
-
-  for(let i in discoveredDevices){
-    if(discoveredDevices[i].address === address){
-      console.log(discoveredDevices[i]);
-      if(!deviceInfoString.contains(address)){
-        discoveredDevices[i].name = name;
-        deviceInfo.devices.push(discoveredDevices);
-        saveToFile(deviceInfo);
-        return;
-      }
-    }
-  }
-
-  console.log('Address not found.');
 }
 
 function saveToFile(updateData){
@@ -103,7 +99,6 @@ function saveToFile(updateData){
     }
     console.log(`Update successful.`);
     deviceInfo = updateData;
-    deviceInfoString = JSON.stringify(deviceInfo);
   });
 }
 
