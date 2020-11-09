@@ -4,7 +4,9 @@
   "description": "node controller for wifi lights",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "serve-dev": "webpack serve --env development",
+    "react-serve-dev": "webpack serve --env development",
+    "express-serve-dev": "node ./server/express-server.js",
+    "serve-dev": "concurrently --kill-others \"npm run express-serve-dev\" \"npm run react-serve-dev\"",
     "cli": "node ./server/cli.js"
   },
   "repository": {
@@ -28,6 +30,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.5",
     "babel-loader": "^8.1.0",
+    "concurrently": "^5.3.0",
     "css-loader": "^5.0.1",
     "style-loader": "^2.0.0",
     "webpack": "^5.4.0",
