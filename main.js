@@ -57,12 +57,20 @@ function startCmdInterface(){
       case 'name':
         nameLight(cmd[1], cmd[2]);
         break;
+      case 'on':
+        setPower(cmd[1], true);
+        break;
+      case 'off':
+        setPower(cmd[1], false);
+        break;
       default: 
         console.log(
           `Command not found. List of options:
            scan - scans for all available devices 
            list - show all named devices
-           name <device-id> <name> - set a device's name`
+           name <device-id> <name> - set a device's name
+           on <device-name> - turn device on
+           off <device-name> - turn device off`
         );
     }
   });  
@@ -88,6 +96,19 @@ function nameLight(id, name) {
     deviceInfo[id] = discoveredDevices[id];
     deviceInfo[id].name = name;
     saveToFile(deviceInfo);
+  }
+}
+
+function list(){
+  console.log(deviceInfo);
+}
+
+function setPower(deviceName, power){
+  for(let d in deviceInfo){
+    if(deviceInfo[d].name === deviceName){
+      let light = new Control(deviceInfo[d].address);
+      light.setPower(power).then(success => { console.log(`${deviceName} turned ${power ? 'on': 'off'}`)});
+    }
   }
 }
 
