@@ -17,24 +17,23 @@ class App extends Component {
     componentDidMount() {
         Axios({
             method: "GET",
-            url: "http://localhost:8000/devices",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then(res => {
-            console.log(res.data);
-            this.setState({ devices: res.data });
-        });
-
-        Axios({
-            method: "GET",
             url: "http://localhost:8000/scan",
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(res => {
-            console.log(res.data);
             this.setState({ availableDevices: res.data });
+            Axios({
+                method: "GET",
+                url: "http://localhost:8000/devices",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                // merge all devices
+                let data = {...this.state.availableDevices, ...res.data};
+                this.setState({ devices: data });
+            });
         });
     }
 
@@ -42,7 +41,7 @@ class App extends Component {
         return Object.keys(devices).map((d) => {
             return (
                 <div className="device-card" key={d}>
-                    <p>{devices[d].name}</p>
+                    <p>{devices[d].name ? devices[d].name : devices[d].id}</p>
                 </div>
             )
         })
@@ -54,7 +53,7 @@ class App extends Component {
                 <header>
                     <h1> Lights </h1>
                 </header>
-                <div class="flex-container">
+                <div className="flex-container">
                     {this.renderDevice(this.state.devices)}
                 </div>
             </div>

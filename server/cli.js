@@ -24,7 +24,7 @@ function startCmdInterface(){
         case 'refresh':
             controller.scanLights()
             .then(() => { 
-              console.log(`${controller.discoveredDevices}`);
+              console.log(controller.discoveredDevices);
             })
             .catch((error => {throw error;}));
           break;

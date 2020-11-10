@@ -55,7 +55,7 @@ class MainControl {
   async scanLights() {
     let discovery = new Discovery();
     let devices = await discovery.scan(500);
-    devices.map((d) => {this._discoveredDevices[d.id] = d;});
+    devices.map((d) => {let id = d.id; this._discoveredDevices[id] = d;});
   }
 
   nameLight(id, name) {

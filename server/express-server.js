@@ -11,7 +11,7 @@ const MainControl = require('./main.js');
 const controller = new MainControl();
 controller.initialize().then(_ => {
     app.use(cors());
-
+    
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`)
     });

@@ -4,6 +4,28 @@
 }
 
 #root {
-    height: 100%;
     font-family: Arial, Helvetica, sans-serif;
-  }
+}
+
+header {
+    background-color: #424242;
+    color: #e6e6e6;
+    box-shadow: 3px 1px 9px #171717;
+}
+
+header > h1 {
+    padding: 1em;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60%;
+}
+
+.device-card {
+    margin: 1em;
+    height: 15vh;
+    border: 1px solid black;
+}
+
