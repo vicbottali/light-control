@@ -81,6 +81,13 @@ class MainControl {
     }
   }
 
+  async togglePower(id, power){
+    await this._deviceControllers[id].setPower(power);
+    this._discoveredDevices[id].state.on = power;
+    return this._discoveredDevices[id];
+  }
+
+  // I'll leave this guy for the cli here for now
   setPower(deviceName, power){
     for(let d in this._deviceInfo){
       if(this._deviceInfo[d].name === deviceName){

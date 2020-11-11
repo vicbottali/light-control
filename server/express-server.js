@@ -32,6 +32,12 @@ controller.initialize().then(_ => {
             res.send(allDevices);
         });
     });
+
+    app.get("/:id/:power", async (req, res) => {
+        let power = req.params.power === 'true'? true : false;
+        let response = await controller.togglePower(req.params.id, power);
+        res.send(response);
+    });
 });
 
 
