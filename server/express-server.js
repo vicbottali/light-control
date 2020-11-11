@@ -11,6 +11,7 @@ const MainControl = require('./main.js');
 const controller = new MainControl();
 controller.initialize().then(_ => {
     app.use(cors());
+    app.use(express.json());
 
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`)
@@ -38,14 +39,11 @@ controller.initialize().then(_ => {
         let response = await controller.togglePower(req.params.id, power);
         res.send(response);
     });
+
+    app.patch("/:id", async (req, res) => {
+        console.log(req.body);
+        let body = req.body;
+        let response = await controller.setColor(req.params.id, body.r, body.b, body.g);
+        res.send(response);
+    });
 });
-
-
-
-//app.use(express.static("public"));
-
-/*
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-})
-*/

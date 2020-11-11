@@ -17,6 +17,11 @@ header > h1 {
     padding: 1em;
 }
 
+main {
+    display: flex;
+    width: 100%;
+}
+
 .flex-container {
     display: flex;
     flex-wrap: wrap;
@@ -26,6 +31,36 @@ header > h1 {
 .device-card {
     margin: 1em;
     height: 15vh;
-    border: 1px solid black;
+    border: 2px solid #c7c7c7;
+    border-radius: 3px;
+}
+
+.device-card > p {
+    padding: 0.67em;
+}
+
+.btn {
+    border: none;
+    border-radius: 2px;
+    padding: 0.67em;
+    color: #f8f9f9;
+    margin: 0.67em;
+    font-weight: 600;
+    box-shadow: 0px 1px 2px #2e2e2e;
+}
+
+.btn:hover {
+    box-shadow: 0px 2px 3px #4a4a4af0;
+}
+
+.color {
+    background-color: rgb(164, 92, 247);
+}
+.power {
+    background-color: #2196F3;
+}
+
+.color-options {
+    flex: 1;
 }
 
