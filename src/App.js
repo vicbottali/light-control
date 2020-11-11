@@ -8,8 +8,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            devices: {},
-            availableDevices: {}
+            devices: {}
         }
     }
 
@@ -17,23 +16,13 @@ class App extends Component {
     componentDidMount() {
         Axios({
             method: "GET",
-            url: "http://localhost:8000/scan",
+            url: "http://localhost:8000/devices",
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(res => {
-            this.setState({ availableDevices: res.data });
-            Axios({
-                method: "GET",
-                url: "http://localhost:8000/devices",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then(res => {
-                // merge all devices
-                let data = {...this.state.availableDevices, ...res.data};
-                this.setState({ devices: data });
-            });
+            console.log(res.data);
+            this.setState({ devices: res.data });
         });
     }
 

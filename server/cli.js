@@ -28,6 +28,15 @@ function startCmdInterface(){
             })
             .catch((error => {throw error;}));
           break;
+        case 'state':
+            let queries = [];
+            for(let i in controller.discoveredDevices){
+                queries.push(controller.getDeviceState(controller.discoveredDevices[i].id));
+            }
+            Promise.all(queries).then((states) => {
+                console.log(states);
+            });
+            break;
         case 'list':
             console.log(controller.deviceInfo);
             break;

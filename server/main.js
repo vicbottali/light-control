@@ -6,6 +6,7 @@ class MainControl {
   constructor(){
     this._deviceInfo = null;
     this._discoveredDevices = {};
+    this._deviceControllers = {};
   }
 
   get deviceInfo() {
@@ -33,7 +34,7 @@ class MainControl {
                 reject(error);
               }
               console.log(`File created. Run 'scan' command to view available devices.`);
-              resolve(this.deviceInfo);
+              resolve(this._deviceInfo);
             });
           } else {
             this._deviceInfo = JSON.parse(data);
@@ -55,7 +56,15 @@ class MainControl {
   async scanLights() {
     let discovery = new Discovery();
     let devices = await discovery.scan(500);
-    devices.map((d) => {let id = d.id; this._discoveredDevices[id] = d;});
+    devices.map((d) => {
+        let device = d; 
+        this._discoveredDevices[device.id] = device;
+        this._deviceControllers[device.id] = new Control(device.address);
+    });
+  }
+
+  getDeviceState(id){
+      return this._deviceControllers[id].queryState();
   }
 
   nameLight(id, name) {
@@ -91,6 +100,7 @@ class MainControl {
       this._deviceInfo = updateData;
     });
   }
+
 
 }
 
