@@ -59,7 +59,16 @@ class MainControl {
         devices.map((d) => {
             let device = d;
             this._discoveredDevices[device.id] = device;
-            this._deviceControllers[device.id] = new Control(device.address);
+            // hard-coding the ack options for now
+            /** TODO: need to dynamically figure out ack options for different types of controllers */
+            this._deviceControllers[device.id] = new Control(device.address, {
+                ack: {
+                    power: true,
+                    color: false,
+                    pattern: false,
+                    custom_pattern: false
+                }
+            });
         });
     }
 
@@ -88,8 +97,8 @@ class MainControl {
     }
 
     async setColor(id, r, g, b) {
-        await this._deviceControllers[id].setColor(r, g, b);
-        return this._discoveredDevices[id];
+        let res = await this._deviceControllers[id].setColor(r, g, b);
+        return res;
     }
 
     // I'll leave this guy for the cli here for now
