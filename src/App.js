@@ -63,7 +63,7 @@ class App extends Component {
         this.picker.context.id = this.state.selectedDevice.id;
     }
 
-    renderPicker(){
+    renderPicker() {
         let picker = new iro.ColorPicker("#colorWheel", {
             display: "none",
             layout: [
@@ -72,7 +72,7 @@ class App extends Component {
                     options: {
                         wheelLightness: false,
                         wheelAngle: 0,
-                        wheelDirection: "anticlockwise"
+                        wheelDirection: "clockwise"
                     }
                 },
                 {
@@ -90,7 +90,7 @@ class App extends Component {
         picker.on('input:end', this.setColor);
     }
 
-    setColor(color){
+    setColor(color) {
         console.log(color);
         console.log(this);
         Axios({
@@ -106,20 +106,25 @@ class App extends Component {
     }
 
     renderDevices(devices) {
-        return Object.keys(devices).map((d) => {
+        return Object.keys(devices).map((d, index) => {
             let device = devices[d];
+            let animDelay = { '--delay': `${index * 0.15}s`};
             return (
                 <Device
                     name={device.name ? device.name : 'No Name'}
                     state={device.state.on ? 'Off' : 'On'}
                     togglePower={this.toggleDevicePower.bind(this, device.id, !device.state.on)}
                     setSelected={this.setSelected.bind(this, device.id)}
+                    animDelay={animDelay}
                     key={device.id} />
             )
         })
     }
 
     render() {
+        const deviceName = this.state.selectedDevice
+                            ? this.state.selectedDevice.name
+                            : 'Choose Device';
         return (
             <div>
                 <header>
@@ -130,6 +135,7 @@ class App extends Component {
                         {this.renderDevices(this.state.devices)}
                     </div>
                     <div className="color-options">
+                        <h3>{deviceName}</h3>
                         <div className="wheel" id="colorWheel"></div>
                     </div>
                 </main>
