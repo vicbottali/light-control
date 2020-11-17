@@ -20,3 +20,6 @@ or you can use the NPM script:
 ```
 npm run cli
 ```
+## Simple Demo
+The web interface is still a work in progress, but below is an example of it interacting with the LED strip on the back of the TV it's displayed on. (Pardon the gif quality):
+![Led Demo](https://github.com/vicbottali/light-control/blob/master/led-demo.gif)
