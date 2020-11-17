@@ -1,5 +1,9 @@
 const path = require("path");
 const webpack = require("webpack");
+const dotenv = require('dotenv').config();
+const 
+    PORT = process.env.REACT_PORT || 3000,
+    EXP_PORT = process.env.EXP_PORT || 8000;
 
 module.exports = {
   entry: "./src/index.js",
@@ -27,8 +31,13 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "public/"),
     port: 3000,
-    publicPath: "http://localhost:3000",
+    publicPath: `http://localhost:${PORT}`,
     hotOnly: true
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()]
+  plugins: [
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.DefinePlugin({
+          "process.env.EXP_PORT": EXP_PORT
+      })
+    ]
 };

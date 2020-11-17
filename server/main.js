@@ -60,7 +60,9 @@ class MainControl {
             let device = d;
             this._discoveredDevices[device.id] = device;
             // hard-coding the ack options for now
-            /** TODO: need to dynamically figure out ack options for different types of controllers */
+            /** TODO: 
+             * 1. Need to dynamically figure out ack options for different types of controllers 
+             * 2. Find a better way of determining white support - only set after queryState call */
             this._deviceControllers[device.id] = new Control(device.address, {
                 ack: {
                     power: true,

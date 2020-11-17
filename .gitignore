@@ -2,3 +2,4 @@ node_modules
 device-info.json
 dist
 */bundle.js
+*.env

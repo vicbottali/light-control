@@ -6,6 +6,8 @@ import Axios from "axios";
 import { hot } from "react-hot-loader";
 import { Device } from "./components/Device";
 
+const PORT = process.env.EXP_PORT || 8000;
+
 
 class App extends Component {
     constructor(props) {
@@ -22,7 +24,7 @@ class App extends Component {
     componentDidMount() {
         Axios({
             method: "GET",
-            url: "http://localhost:8000/devices",
+            url: `http://localhost:${PORT}/devices`,
             headers: {
                 "Content-Type": "application/json"
             }
@@ -37,7 +39,7 @@ class App extends Component {
     toggleDevicePower(id, power) {
         Axios({
             method: "GET",
-            url: `http://localhost:8000/${id}/${power}`,
+            url: `http://localhost:${PORT}/${id}/${power}`,
             headers: {
                 "Content-Type": "application/json"
             }
@@ -95,7 +97,7 @@ class App extends Component {
         console.log(this);
         Axios({
             method: "PATCH",
-            url: `http://localhost:8000/${this.context.id}`,
+            url: `http://localhost:${PORT}/${this.context.id}`,
             data: color.rgb,
             headers: {
                 "Content-Type": "application/json"
