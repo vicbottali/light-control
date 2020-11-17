@@ -1,30 +1,21 @@
 
 import React, { Component } from "react";
 import "./styles.css";
+import iro from "@jaames/iro";
 import Axios from "axios";
 import { hot } from "react-hot-loader";
-import iro from "@jaames/iro";
+import { Device } from "./components/Device";
 
-function Device(props) {
-    return (
-        <div className="device-card">
-            <p>{props.name}</p>
-            <button className="btn power" onClick={props.togglePower}>{props.state}</button>
-            <button className="btn color" onClick={props.changeColor}>Color</button>
-        </div>
-    )
-}
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             devices: {},
-            selectedDevice: null,
-            colorPicker: null
-        }
-        this.toggleDevicePower.bind(this);
-        this.chooseColor.bind(this);
+            selectedDevice: null
+        };
+
+        this.picker = null;
     }
 
     // Fires after component is added to DOM tree
@@ -37,8 +28,10 @@ class App extends Component {
             }
         }).then(res => {
             console.log(res.data);
-            this.setState({ devices: res.data});
+            this.setState({ devices: res.data });
         });
+
+        this.renderPicker();
     }
 
     toggleDevicePower(id, power) {
@@ -56,60 +49,60 @@ class App extends Component {
         });
     }
 
-    setColor(rgb){
+    setSelected(id) {
+        if (!this.state.selectedDevice) {
+            this.picker.setOptions({ display: "block" });
+        }
+        let device = this.state.devices[id];
+        this.setState({ selectedDevice: device }, this.updatePicker);
+    }
+
+    updatePicker() {
+        let color = this.state.selectedDevice.state.color;
+        this.picker.color.set({ r: color.red, g: color.green, b: color.blue });
+        this.picker.context.id = this.state.selectedDevice.id;
+    }
+
+    renderPicker(){
+        let picker = new iro.ColorPicker("#colorWheel", {
+            display: "none",
+            layout: [
+                {
+                    component: iro.ui.Wheel,
+                    options: {
+                        wheelLightness: false,
+                        wheelAngle: 0,
+                        wheelDirection: "anticlockwise"
+                    }
+                },
+                {
+                    component: iro.ui.Slider,
+                    options: {
+                        sliderType: 'value',
+                        sliderShape: 'bar',
+                        activeIndex: 2
+                    }
+                }
+            ]
+        });
+
+        this.picker = picker;
+        picker.on('input:end', this.setColor);
+    }
+
+    setColor(color){
+        console.log(color);
+        console.log(this);
         Axios({
             method: "PATCH",
-            url: `http://localhost:8000/${id}`,
-            data: rgb,
+            url: `http://localhost:8000/${this.context.id}`,
+            data: color.rgb,
             headers: {
                 "Content-Type": "application/json"
             }
         }).then(res => {
             console.log(res);
         });
-    }
-
-    chooseColor(id){
-        if(!this.state.selectedDevice){
-            let colorPicker = new iro.ColorPicker("#colorWheel", {
-                layout: [
-                    {
-                        component: iro.ui.Wheel,
-                        options: {
-                            wheelLightness: false,
-                            wheelAngle: 0,
-                            wheelDirection: "anticlockwise"
-                        }
-                    },
-                    {
-                        component: iro.ui.Slider,
-                        options: {
-                            sliderType: 'value',
-                            sliderShape: 'bar',
-                            activeIndex: 2
-                        }
-                    }
-                ]
-            });
-            
-            colorPicker.on('input:end', function (color) {
-                console.log(color);
-                Axios({
-                    method: "PATCH",
-                    url: `http://localhost:8000/${id}`,
-                    data: color.rgb,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }).then(res => {
-                    console.log(res);
-                });
-            });
-            
-            this.setState({selectedDevice: this.state.devices[id]});
-        } else {
-            this.setState({ selectedDevice: this.state.devices[id]});
-        }
     }
 
     renderDevices(devices) {
@@ -120,7 +113,7 @@ class App extends Component {
                     name={device.name ? device.name : 'No Name'}
                     state={device.state.on ? 'Off' : 'On'}
                     togglePower={this.toggleDevicePower.bind(this, device.id, !device.state.on)}
-                    changeColor={this.chooseColor.bind(this, device.id)}
+                    setSelected={this.setSelected.bind(this, device.id)}
                     key={device.id} />
             )
         })
