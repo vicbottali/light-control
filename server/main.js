@@ -63,14 +63,7 @@ class MainControl {
             /** TODO: 
              * 1. Need to dynamically figure out ack options for different types of controllers 
              * 2. Find a better way of determining white support - only set after queryState call */
-            this._deviceControllers[device.id] = new Control(device.address, {
-                ack: {
-                    power: true,
-                    color: false,
-                    pattern: false,
-                    custom_pattern: false
-                }
-            });
+            this._deviceControllers[device.id] = new Control(device.address);
         });
     }
 
@@ -124,7 +117,28 @@ class MainControl {
         });
     }
 
+    /**
+     * Runs a few functions on a Control object to determine
+     * the appropriate ack parameters for the type of bulb/controller.
+     * @param   {string} id - Device id
+     * @return  {number} Value for ack mask **Control.ackMask({bitMask})**
+     */
+    async ackParamTest(id) {
+        let device = this._deviceControllers[id],
+            bitMask = 15;  // Start with '1111', flip corresponding bit if time out
+        
+        await device.setPower(true)
+            .catch((e) => { bitMask ^= 0x01 });
 
+        await device.setColor(255, 255, 255)
+            .catch((e) => { bitMask ^= 0x02 });
+        
+        // Handles both the third and fourth parameters
+        await device.setPattern('seven_color_cross_fade', 10)
+            .catch((e) => { bitMask ^= 0x0C });
+
+        return bitMask;
+    }
 }
 
 module.exports = MainControl;
